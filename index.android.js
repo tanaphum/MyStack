@@ -9,45 +9,71 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  FlatList,
+  TextInput,
+  Alert,
+  Button
 } from 'react-native';
 
-export default class MyStack extends Component {
+export default class App extends Component {
+    constructor(props) {
+    super(props);
+    this.state = { text: '' ,
+                    data : [
+            {key: 'Apple'},
+            {key: 'Ball'},
+            {key: 'Cat'},
+            {key: 'Devil'},
+            {key: 'Fox'},
+          ]
+                };
+  }
+    _handlePress() {
+    Alert.alert('Poping','Are you sure?',
+        [
+          {text: 'PoP', onPress: () => this.state.data.splice(0, 1)
+          },
+          {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+        ],
+        { cancelable: false }
+      )
+  }
+    insertText = (text) =>{
+            var joined = text.concat(this.state.data);
+            this.setState({ data: joined })
+    }
   render() {
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.android.js
-        </Text>
-        <Text style={styles.instructions}>
-          Double tap R on your keyboard to reload,{'\n'}
-          Shake or press menu button for dev menu
-        </Text>
+              <TextInput
+        style={styles.input}
+        onChangeText={(text) => this.setState({text})}
+        value={this.state.text}
+      />
+      <View style={styles.boxButton}> 
+          <Button onPress={() => this.state.data.join(this.state.text)}
+                  title="push"
+                  accessibilityLabel="push"
+                />
+         </View>
+         <View style={styles.boxButton}> 
+          <Button onPress={() => this._handlePress()}
+                  title="pop"
+                  accessibilityLabel="Learn more about button"
+                />
+      </View>
+        <FlatList style={styles.data}
+          data={this.state.data}
+          renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
+        />
       </View>
     );
   }
+
+  
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
-});
+var styles = require('./style');
 
-AppRegistry.registerComponent('MyStack', () => MyStack);
+AppRegistry.registerComponent('App', () => App);
